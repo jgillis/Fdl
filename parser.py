@@ -44,4 +44,40 @@ def parse(filename):
   parser.parse(tree)
   return tree
 
-#c[1][cc[1]]['id']
+class fdl:
+  """
+    Fdl helper class.
+
+    Example usage:
+    from fdl.parser import fdl
+   
+    f = fdl('myfile.fdl')
+    f.tree # gives you the whole structure
+    f.getFrame(number|name) # gives you a certain frame
+    f.getVariable(name) # gives you a certain variable
+
+  """
+  def __init__(self,filename):
+    self.tree=parse(filename)
+
+  def getFrame(self,nameorid):
+    if isinstance(nameorid,int):
+      myid=nameorid
+      for f in self.tree['frames']:
+        if f['id'] == myid:
+          return f
+    else:
+      myname=nameorid
+      for f in self.tree['frames']:
+        if f['name'] == myname:
+          return f
+    raise Exception("Did not find frame with name %s in %s" % (name,self.tree))
+
+
+  def getVariable(self,name):
+    for f in self.tree['variables']:
+      if f['name'] == name:
+        return f
+    raise Exception("Did not find variable with name %s in %s" % (name,self.tree))
+
+
