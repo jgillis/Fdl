@@ -7,6 +7,7 @@ class Frame:
     self.fg = base.fg
     self.base = base
     self.name = name
+    self.matrix = matrix
     self.description = description
     if id is None:
       self.id = self.fg.getAvailableId()
