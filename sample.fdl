@@ -1,0 +1,25 @@
+variables:
+  - name: phi
+    deriv: omega alpha
+    type: angular
+    bounds: -pi pi
+
+  - name: theta
+    type: angular
+    bounds: -pi pi
+
+frames:
+  - id: 1
+    name: p
+    description: platform
+    base: world
+    matrix: tr(x,y,z)
+
+  - id: 2
+    name: p
+    description: platform
+    base: world
+    matrix: tr(x,y,z)*Rx(theta)
+
+  - id: 3
+    matrix: tr(x,0,0)
