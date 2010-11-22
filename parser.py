@@ -23,8 +23,7 @@ def parseframeid(x,c,cc):
     raise Exception("Sorry, but 0 is reserved as id for the world frame")
   return y
 
-def parse(filename):
-  parser = Top(
+fdlParser = Top(
 	  List('variables',
 		  Att('name'),
 		  Att('deriv',lambda x,c,cc : x.split(),lambda c,cc: ['d' + c[0]['name'],'dd' + c[0]['name'] ]),
@@ -40,8 +39,9 @@ def parse(filename):
 	  ),
   )
 
+def parse(filename):
   tree=yaml.load(file(filename,'r'))
-  parser.parse(tree)
+  fdlParser.parse(tree)
   return tree
 
 class fdl:
@@ -80,4 +80,10 @@ class fdl:
         return f
     raise Exception("Did not find variable with name %s in %s" % (name,self.tree))
 
+  def getFrames(self):
+    return self.tree['frames']
 
+
+  def addFrame(self,framestruct):
+    self.tree['frames'].append(framestruct)
+    self.tree=fdlParser.parse(fdlParser)
