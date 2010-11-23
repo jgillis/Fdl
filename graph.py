@@ -51,12 +51,18 @@ class FrameGraph:
     if isinstance(keyword,Frame):
       return keyword
 
-  def config(self,filename):
+  def config(self,filename,frameClass=None):
+    """
+    optional keyword attribute frameClass allows you to specify a class inheriting from Frame
+    """
     if self.isconfigured:
       raise Exception("FrameGraph is already configured\n")
     self.fdl=fdl(filename)
+    if frameClass is None:
+      frameClass=Frame
+    print "Initializing with", frameClass
     for frame in self.fdl.getFrames():
-      self.add(Frame(self.getFrame(frame['base']),frame['matrix'],name=frame['name'],description=frame['description'],id=frame['id']))
+      self.add(frameClass(self.getFrame(frame['base']),frame['matrix'],name=frame['name'],description=frame['description'],id=frame['id']))
     self.isconfigured = True
 
   def getAvailableId(self):
