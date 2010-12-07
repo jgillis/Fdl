@@ -20,6 +20,9 @@ class Frame:
 class WorldFrame(Frame):
   def __init__(self,fg):
     self.fg=fg
+    self.name="world"
+    self.description="Inertial world frame"
+    self.id=0
   pass
 
 
@@ -34,7 +37,10 @@ class FrameGraph:
     if isinstance(object,Frame):
       self.framesbyid[object.id] = object
       self.framesbyname[object.name] = object
-      self.framesbydep[self.getFrame(object.base)] = object
+      if self.getFrame(object.base) in self.framesbydep:
+        self.framesbydep[self.getFrame(object.base)].append(object)
+      else:
+        self.framesbydep[self.getFrame(object.base)] = [object]
     else:
       raise Exception("FrameGraph's add method is expecting a Frame object")
   def getWorldFrame(self):

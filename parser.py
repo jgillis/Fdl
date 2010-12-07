@@ -40,7 +40,10 @@ fdlParser = Top(
   )
 
 def parse(filename):
-  tree=yaml.load(file(filename,'r'))
+  if isinstance(filename,file):
+    tree=yaml.load(filename)
+  else:
+    tree=yaml.load(file(filename,'r'))
   fdlParser.parse(tree)
   return tree
 
