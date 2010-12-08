@@ -23,6 +23,11 @@ def parseframeid(x,c,cc):
     raise Exception("Sorry, but 0 is reserved as id for the world frame")
   return y
 
+def defaulterbase(c,cc):
+  if cc[1]==0:
+    return 0
+  return c[2][cc[1]-1]['id'] # default base is the preceding frame - maybe XML + XPath wasn't such a bad idea after all
+
 fdlParser = Top(
 	  List('variables',
 		  Att('name'),
@@ -34,7 +39,7 @@ fdlParser = Top(
 		  Att('id',parseframeid),
 		  Att('name',None,lambda c,cc: str(c[0]['id'])),
 		  Att('description',None,lambda c,cc: 'Frame {%d}' % c[0]['id']),
-		  Att('base',parsebase,lambda c,cc: c[2][cc[1]-1]['id']), # default base is the preceding frame - maybe XML + XPath wasn't such a bad idea after all
+		  Att('base',parsebase,defaulterbase), 
 		  Att('matrix')
 	  ),
   )
