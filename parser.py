@@ -39,12 +39,12 @@ fdlParser = Top(
 	  ),
   )
 
-def parse(filename):
+def parse(filename,debug=False):
   if isinstance(filename,file):
     tree=yaml.load(filename)
   else:
     tree=yaml.load(file(filename,'r'))
-  fdlParser.parse(tree)
+  fdlParser.parse(tree,debug)
   return tree
 
 class fdl:
@@ -60,8 +60,8 @@ class fdl:
     f.getVariable(name) # gives you a certain variable
 
   """
-  def __init__(self,filename):
-    self.tree=parse(filename)
+  def __init__(self,filename,debug=False):
+    self.tree=parse(filename,debug)
 
   def getFrame(self,nameorid):
     if isinstance(nameorid,int):

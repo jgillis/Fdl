@@ -28,10 +28,10 @@ class WorldFrame(Frame):
 
 class FrameGraph:
   isconfigured = False
-  def __init__(self,filename=None):
+  def __init__(self,filename=None,debug=False):
 
     if not(filename is None):
-      self.config(filename)
+      self.config(filename,debug=debug)
 
   def add(self,object):
     if isinstance(object,Frame):
@@ -54,7 +54,7 @@ class FrameGraph:
     if isinstance(keyword,Frame):
       return keyword
 
-  def config(self,filename,frameClass=None,worldframeClass=None):
+  def config(self,filename,frameClass=None,worldframeClass=None,debug=False):
     """
     optional keyword attribute frameClass allows you to specify a class inheriting from Frame
     """
@@ -66,7 +66,7 @@ class FrameGraph:
     self.framesbydep = dict()
     if self.isconfigured:
       raise Exception("FrameGraph is already configured\n")
-    self.fdl=fdl(filename)
+    self.fdl=fdl(filename,debug)
     if frameClass is None:
       frameClass=Frame
 
