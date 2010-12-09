@@ -1,0 +1,13 @@
+variables:
+  - name: theta_x
+    type: angular
+    
+  - name: theta_y
+    type: angular
+    
+  - name: theta_z
+    type: angular
+
+frames:
+  - id: 1
+    matrix: Rx(theta_x)*Rz(theta_y)*Rz(theta_z)
