@@ -94,29 +94,39 @@ class FrameGraph:
     if isinstance(keyword,Frame):
       return keyword
 
-  def config(self,filename,frameClass=None,worldframeClass=None,debug=False):
+  def config(self,filename=None,frameClass=None,worldframeClass=None,debug=False):
     """
+    
+    config()
+      just start with a WorldFrame
+      
+    config(filename)
+      start from an fdl file
+    
     optional keyword attribute frameClass allows you to specify a class inheriting from Frame
     """
     if worldframeClass is None:
       worldframeClass=WorldFrame
+    if frameClass is None:
+      frameClass=Frame
+    print "Initializing with", frameClass
     self.world = worldframeClass(self)
     self.framesbyid = {0:self.world}
     self.framesbyname = {'world':self.world}
     self.framesbydep = dict()
     if self.isconfigured:
       raise Exception("FrameGraph is already configured\n")
-    self.fdl=fdl(filename,debug)
-    if frameClass is None:
-      frameClass=Frame
-
-      
-    
-    print "Initializing with", frameClass
-    for frame in self.fdl.getFrames():
-      self.add(frameClass(self.getFrame(frame['base']),frame['matrix'],name=frame['name'],description=frame['description'],id=frame['id']))
+    if not(filename is None):
+      self.fdl=fdl(filename,debug)
+      for frame in self.fdl.getFrames():
+        self.add(frameClass(self.getFrame(frame['base']),frame['matrix'],name=frame['name'],description=frame['description'],id=frame['id']))
     self.isconfigured = True
 
   def getAvailableId(self):
+    """
+    
+    Return a frame identifier that is unoccupied
+    
+    """
     return len(self.framesbyid)
 

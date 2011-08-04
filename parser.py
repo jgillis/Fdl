@@ -88,6 +88,12 @@ class fdl:
         return f
     raise Exception("Did not find variable with name %s in %s" % (name,self.tree))
 
+  def getVariables(self,name):
+    """
+     Return a list of all variables
+    """
+    return self.tree['variables']
+
   def getFrames(self):
     return self.tree['frames']
 
