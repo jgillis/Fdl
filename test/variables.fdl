@@ -22,6 +22,24 @@ variables:
     
   - name: q
 
+  - name: theta_0y
+    type: angular
+    bounds: -pi pi
+
+  - name: theta_0x
+    type: angular
+    bounds: -pi pi
+
+  - name: theta_mb
+    type: angular
+    bounds: -pi pi
+    
+  - name: b
+    type: linear
+    
+  - name: h
+    type: linear
+
 frames:
   - id: 1
     name: p

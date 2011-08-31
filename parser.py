@@ -38,14 +38,16 @@ def myeval(x):
 def checkType(x,c,cc):
   cand = ["linear","angular","real"]
   if not(x in cand):
-    raise Exception("Unknown variable type %s" % str(cand))
-  return cand  
+    raise Exception("Unknown variable type %s. Pick one of %s" % (x,str(cand)))
+  return x  
   
 def defaultbounds(c,cc):
   if c[0]["type"]=='linear' or c[0]["type"]=='real':
     return [-10,10]
   elif c[0]["type"]=='angular':
     return [-pi,pi]
+  else:
+    raise Exception("Unknown variable type %s" % c[0]["type"])
     
 
 fdlParser = Top(
