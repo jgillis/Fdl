@@ -28,12 +28,33 @@ def defaulterbase(c,cc):
     return 0
   return c[2][cc[1]-1]['id'] # default base is the preceding frame - maybe XML + XPath wasn't such a bad idea after all
 
+def myeval(x):
+  import numpy
+  if isinstance(x,type("")):
+    return eval(x,numpy.__dict__)+0.0
+  else:
+    return x+0.0
+    
+def checkType(x,c,cc):
+  cand = ["linear","angular","real"]
+  if not(x in cand):
+    raise Exception("Unknown variable type %s" % str(cand))
+  return cand  
+  
+def defaultbounds(c,cc):
+  if c[0]["type"]=='linear' or c[0]["type"]=='real':
+    return [-10,10]
+  elif c[0]["type"]=='angular':
+    return [-pi,pi]
+    
+
 fdlParser = Top(
 	  List('variables',
 		  Att('name'),
 		  Att('deriv',lambda x,c,cc : x.split(),lambda c,cc: ['d' + c[0]['name'],'dd' + c[0]['name'] ]),
-		  Att('type',None,'linear'),
-		  Att('bounds',lambda x,c,cc : x.split())
+		  Att('type',checkType,'linear'),
+		  Att('bounds',lambda x,c,cc : map(myeval,x.split()),defaultbounds),
+		  Att('default',lambda x,c,cc : myeval(x),lambda c,cc: (c[0]['bounds'][0] + c[0]['bounds'][1])/2)
 	  ),
 	  List('frames',
 		  Att('id',parseframeid),
@@ -88,7 +109,7 @@ class fdl:
         return f
     raise Exception("Did not find variable with name %s in %s" % (name,self.tree))
 
-  def getVariables(self,name):
+  def getVariables(self):
     """
      Return a list of all variables
     """
