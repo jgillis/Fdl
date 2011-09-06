@@ -1,6 +1,8 @@
 import types
 from fdl.parser import fdl
 
+import ipdb
+
 class Frame:
   """
    A class that represents a frame
@@ -129,4 +131,32 @@ class FrameGraph:
     
     """
     return len(self.framesbyid)
+    
+    
+  
+  def getHierarchy(self,frame):
+    """
+    return a list of the node id itself and the ids of all its ancenstors.
+    """
+    f = self.getFrame(frame)
+    if hasattr(f,'base'):
+      return [f] + self.getHierarchy(f.base)
+    else:
+      return [f]
+    
+  def getCommonBase(self,id1,id2):
+    """
+    Given two frames, find the common base frame
+    """
+    h1 = self.getHierarchy(id1)
+    h1.reverse()
+    h2 = self.getHierarchy(id2)
+    h2.reverse()
+        
+    common = None
+    for i in range(0,min(len(h1),len(h2))):
+      if h1[i]==h2[i]:
+        common = h1[i]
+        
+    return common 
 
