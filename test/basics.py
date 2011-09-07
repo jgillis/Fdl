@@ -34,3 +34,8 @@ assert fg.getCommonBase(f,g)==f
 assert fg.getCommonBase(f,h)==f
 assert fg.getCommonBase(t,g)==f
 assert fg.getCommonBase(f,q)==f
+
+
+fg.add(Variable("foo"))
+
+print fg.variables["foo"]

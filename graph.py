@@ -1,5 +1,6 @@
 import types
 from fdl.parser import fdl
+from numpy import pi
 
 import ipdb
 
@@ -25,7 +26,7 @@ class Frame:
      If no id is supplied, the first available id is used (supplied by FrameGraph)
      
     """
-    print "init Frame", base
+    #print "init Frame", base
     self.fg = base.fg
     self.base = base
     self.name = name
@@ -38,7 +39,7 @@ class Frame:
         self.id = int(id)
       except:
         self.id = id
-
+        
 class WorldFrame(Frame):
   """
    A subclass of Frame to denote the World Frame
@@ -49,6 +50,37 @@ class WorldFrame(Frame):
     self.description="Inertial world frame"
     self.id=0
   pass
+
+class Variable:
+  def __init__(self,name="foo",deriv=None,type="linear",bounds=None,default=None):
+
+    if deriv==None:
+      deriv = ['d'+name,'dd'+name]
+    cand = ["linear","angular","real"]
+    if not(type in cand):
+      raise Exception("Unknown variable type %s. Pick one of %s" % (type,str(cand)))
+    
+    if type=='linear' or "type"=='real':
+      bounds = [-10.0,10.0]
+    elif type=='angular':
+      bounds = [-pi,pi]
+
+    if default==None:
+      default = (bounds[0] + bounds[1])/2.0
+      
+    self.name    = name
+    self.type    = type
+    self.deriv   = deriv
+    self.bounds  = bounds
+    self.default = default
+    
+  def __str__(self):
+    fields = ["name","deriv","type","bounds", "default"]
+    s = []
+    for f in fields:
+      s.append("%s=%s" % (f,str(getattr(self,f))))
+    
+    return "Variable(" + ", ".join(s) + ")"
 
 
 class FrameGraph:
@@ -76,6 +108,12 @@ class FrameGraph:
         self.framesbydep[self.getFrame(object.base)].append(object)
       else:
         self.framesbydep[self.getFrame(object.base)] = [object]
+      self.frames.append(object)
+      return object
+    elif isinstance(object,Variable):
+      self.variable[object.name] = object
+      self.variables.append(object)
+      return object
     else:
       raise Exception("FrameGraph's add method is expecting a Frame object")
       
@@ -111,17 +149,31 @@ class FrameGraph:
       worldframeClass=WorldFrame
     if frameClass is None:
       frameClass=Frame
-    print "Initializing with", frameClass
+    #print "Initializing with", frameClass
     self.world = worldframeClass(self)
     self.framesbyid = {0:self.world}
     self.framesbyname = {'world':self.world}
     self.framesbydep = dict()
+    self.frames = [self.world]
+    self.variable = dict()
+    self.variables = []
     if self.isconfigured:
       raise Exception("FrameGraph is already configured\n")
-    if not(filename is None):
+      
+    if isinstance(filename,FrameGraph):
+      fg = filename
+      for frame in fg.frames:
+        if not(isinstance(frame,WorldFrame)):
+          self.add(frameClass(self.getFrame(frame.base.id),frame.matrix,name=frame.name,description=frame.description,id=frame.id))
+      for v in fg.variables:
+        self.add(Variable(v.name,deriv=v.deriv,type=v.type,bounds=v.bounds,default=v.default))
+    elif not(filename is None):
       self.fdl=fdl(filename,debug)
       for frame in self.fdl.getFrames():
         self.add(frameClass(self.getFrame(frame['base']),frame['matrix'],name=frame['name'],description=frame['description'],id=frame['id']))
+      for v in self.fdl.getVariables():
+        self.add(Variable(v["name"],deriv=v["deriv"],type=v["type"],bounds=v["bounds"],default=v["default"]))
+      
     self.isconfigured = True
 
   def getAvailableId(self):
