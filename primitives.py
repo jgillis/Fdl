@@ -1,4 +1,4 @@
-from numpy import matrix,sin,cos
+from numpy import matrix,sin,cos,pi
 
 from kinetics.kinematics import TRx, TRy, TRz, tr, origin, Tquat, fullR, TfullR
   
