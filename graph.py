@@ -60,10 +60,11 @@ class Variable:
     if not(type in cand):
       raise Exception("Unknown variable type %s. Pick one of %s" % (type,str(cand)))
     
-    if type=='linear' or "type"=='real':
-      bounds = [-10.0,10.0]
-    elif type=='angular':
-      bounds = [-pi,pi]
+    if bounds is None:
+      if type=='linear' or "type"=='real':
+        bounds = [-10.0,10.0]
+      elif type=='angular':
+        bounds = [-pi,pi]
 
     if default==None:
       default = (bounds[0] + bounds[1])/2.0
